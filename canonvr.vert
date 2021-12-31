@@ -26,7 +26,7 @@ uniform sampler2D image;
 vec2 size = textureSize(image, 0);
 
 // 背景テクスチャのテクスチャ空間上のスケール
-vec2 scale = vec2(0.5 * size.y / size.x, -0.5) / circle.st;
+vec2 scale = vec2(0.5 * size.y / size.x, -0.5) * circle.st * 0.0035367765f;
 
 // 背景テクスチャのテクスチャ空間上の中心位置
 vec2 center = circle.pq + 0.5;

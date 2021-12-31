@@ -1,4 +1,4 @@
-//
+﻿//
 // ゲームグラフィックス特論宿題アプリケーション
 //
 #include "GgApp.h"
@@ -71,12 +71,9 @@ int GgApp::main(int argc, const char* const* argv)
   // 背景画像のテクスチャ
   GLuint image{ 0 };
 
-  // ラジアン変換
-  constexpr GLfloat toRad{ 0.00872664626f };
-
   // 背景画像のイメージサークルの半径
   float radius_x{ 180.0f };
-  float radius_y{ 180.0f };
+  float radius_y{ 170.66668f };
 
   // 背景画像のイメージサークルの中心
   float center_x{ 0.0f };
@@ -197,7 +194,7 @@ int GgApp::main(int argc, const char* const* argv)
             file = filepath;
 
             // ファイルパスの取り出しに使ったメモリを開放する
-            if (filepath) NFD_FreePath(filepath);
+            NFD_FreePath(filepath);
 
             // キャプチャを開始する
             camera.start();
@@ -231,8 +228,8 @@ int GgApp::main(int argc, const char* const* argv)
       glUseProgram(expansion);
 
       // スクリーンを縦に２分割する
-      const GLsizei width{ window.getWidth() / 2 };
-      const GLsizei height{ window.getHeight() };
+      const GLsizei width{ window.getFboWidth() / 2 };
+      const GLsizei height{ window.getFboHeight() };
       const GLfloat aspect{ window.getAspect() * 0.5f };
 
       // スクリーンの矩形の格子点数
@@ -275,21 +272,15 @@ int GgApp::main(int argc, const char* const* argv)
       // メッシュを指定する
       glBindVertexArray(mesh);
 
-      // 画角
-      const GLfloat rx{ radius_x * toRad };
-      const GLfloat ry{ radius_y * toRad };
-
-      // 位置
-      const GLfloat xl{ center_x - 0.25f - offset_x };
-      const GLfloat xr{ center_x + 0.25f + offset_x };
-
       // 左目の映像を描画する
-      glUniform4f(circleLoc, rx, ry, xl, center_y + offset_y);
+      const GLfloat center_l{ center_x - 0.25f - offset_x };
+      glUniform4f(circleLoc, radius_x, radius_y, center_l, center_y + offset_y);
       glViewport(0, 0, width, height);
       glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, slices * 2, stacks);
 
       // 右目の映像を描画する
-      glUniform4f(circleLoc, rx, ry, xr, center_y - offset_y);
+      const GLfloat center_r{ center_x + 0.25f + offset_x };
+      glUniform4f(circleLoc, radius_x, radius_y, center_r, center_y - offset_y);
       glViewport(width, 0, width, height);
       glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, slices * 2, stacks);
     }

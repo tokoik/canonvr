@@ -653,6 +653,20 @@ public:
     return size[1];
   }
 
+  //! \brief FBO の横幅を得る.
+  //!   \return FBO の横幅.
+  GLsizei getFboWidth() const
+  {
+    return fboSize[0];
+  }
+
+  //! \brief FBO の高さを得る.
+  //!   \return FBO の高さ.
+  GLsizei getFboHeight() const
+  {
+    return fboSize[1];
+  }
+
   //! \brief ウィンドウのサイズを得る.
   //!   \return ウィンドウの幅と高さを格納した GLsizei 型の 2 要素の配列.
   const GLsizei* getSize() const
@@ -666,6 +680,21 @@ public:
   {
     size[0] = getWidth();
     size[1] = getHeight();
+  }
+
+  //! \brief FBO のサイズを得る.
+  //!   \return FBO の幅と高さを格納した GLsizei 型の 2 要素の配列.
+  const GLsizei* getFboSize() const
+  {
+    return fboSize.data();
+  }
+
+  //! \brief FBO のサイズを得る.
+  //!   \param size FBO の幅と高さを格納した GLsizei 型の 2 要素の配列.
+  void getFboSize(GLsizei* fboSize) const
+  {
+    fboSize[0] = getFboWidth();
+    fboSize[1] = getFboHeight();
   }
 
   //! \brief ウィンドウのアスペクト比を得る.
@@ -693,15 +722,15 @@ public:
     return glfwGetKey(window, key) != GLFW_RELEASE;
   }
 
-  //! \brief インタフェースを選択する
-  //!   \param no インターフェース番号
+  //! \brief インタフェースを選択する.
+  //!   \param no インターフェース番号.
   void selectInterface(int no)
   {
     assert(static_cast<size_t>(no) < interfaceData.size());
     interfaceNo = no;
   }
 
-  //! \brief マウスの移動速度を設定する
+  //! \brief マウスの移動速度を設定する.
   //!   \param vx x 方向の移動速度.
   //!   \param vy y 方向の移動速度.
   void setVelocity(GLfloat vx, GLfloat vy, GLfloat vz = 0.1f)
@@ -967,14 +996,14 @@ public:
     return current_if.rotation[button].getMatrix();
   }
 
-  //! \brief トラックボール処理をリセットする
+  //! \brief トラックボール処理をリセットする.
   void resetRotation()
   {
     // トラックボールをリセットする
     for (auto& tb : interfaceData[interfaceNo].rotation) tb.reset();
   }
 
-  //! 現在位置と平行移動量をリセットする
+  //! 現在位置と平行移動量をリセットする.
   void resetTranslation()
   {
     // 現在のインターフェース
@@ -993,7 +1022,7 @@ public:
     std::fill(current_if.wheel.begin(), current_if.wheel.end(), 0.0f);
   }
 
-  //! \brief トラックボール・マウスホイール・矢印キーの値を初期化する
+  //! \brief トラックボール・マウスホイール・矢印キーの値を初期化する.
   void reset()
   {
     // トラックボール処理をリセットする
@@ -1046,15 +1075,13 @@ public:
   }
 
   //! \brief 表示領域をメニューバーの高さだけ減らす.
-  //!   \param メニューバーの高さ
+  //!   \param メニューバーの高さ.
   void setMenubarHeight(float menubarheight)
   {
     // メニューバーより下に描画する
-    int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
-    height -= static_cast<int>(menubarheight);
-    glViewport(0, 0, width, height);
-    fboSize = std::array<GLsizei, 2>{ width, height };
+    glfwGetFramebufferSize(window, &fboSize[0], &fboSize[1]);
+    fboSize[0] -= static_cast<GLsizei>(menubarheight);
+    glViewport(0, 0, fboSize[0], fboSize[1]);
   }
 };
 
