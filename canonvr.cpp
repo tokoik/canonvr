@@ -46,7 +46,7 @@ int GgApp::main(int argc, const char* const* argv)
   int capture_fps{ 0 };
 
   // 背景描画用のシェーダプログラムを読み込む
-  const GLuint expansion(ggLoadShader(capture_vsrc, capture_fsrc));
+  const GLuint expansion{ ggLoadShader(capture_vsrc, capture_fsrc) };
   if (!expansion)
   {
     // シェーダが読み込めなかった
@@ -249,7 +249,7 @@ int GgApp::main(int argc, const char* const* argv)
       //   screen[1] = (top - bottom) / 2
       //   screen[2] = (right + left) / 2
       //   screen[3] = (top + bottom) / 2
-      const GLfloat screen[] = { aspect, 1.0f, 0.0f, 0.0f };
+      const GLfloat screen[]{ aspect, 1.0f, 0.0f, 0.0f };
       glUniform4fv(screenLoc, 1, screen);
 
       // スクリーンまでの焦点距離
@@ -273,13 +273,13 @@ int GgApp::main(int argc, const char* const* argv)
       glBindVertexArray(mesh);
 
       // 左目の映像を描画する
-      const GLfloat center_l{ center_x - 0.25f - offset_x };
+      const GLfloat center_l{ center_x + 0.25f - offset_x };
       glUniform4f(circleLoc, radius_x, radius_y, center_l, center_y + offset_y);
       glViewport(0, 0, width, height);
       glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, slices * 2, stacks);
 
       // 右目の映像を描画する
-      const GLfloat center_r{ center_x + 0.25f + offset_x };
+      const GLfloat center_r{ center_x - 0.25f + offset_x };
       glUniform4f(circleLoc, radius_x, radius_y, center_r, center_y - offset_y);
       glViewport(width, 0, width, height);
       glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, slices * 2, stacks);
